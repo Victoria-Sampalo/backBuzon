@@ -1,13 +1,14 @@
-const {validEmail,esPassSegura, validName, validNumber, validDate, createDate, validDataString, prevenirInyeccionCodigo}=require("./validarDatos")
-const { generarHashpass, comprobarPass } = require('./bcrypt.js');
-const {catchAsync} =require('./catchAsync.js')
-const {response}=require('./response.js')
-const {ClientError}=require('./clientError.js')
-const {resError}= require('./resError.js');
-const { calcularPrecio } = require("./utils.js");
-const { generarToken, verificarToken } = require("./jwt.js");
+// validarDatos.js
+import { validEmail, esPassSegura, validName, validNumber, validDate, createDate, validDataString, prevenirInyeccionCodigo } from "./validarDatos.js";
+import { generarHashpass, comprobarPass } from './bcrypt.js';
+import { catchAsync } from './catchAsync.js';
+import { response } from './response.js';
+import { ClientError } from './clientError.js';
+import { resError } from './resError.js';
+import { calcularPrecio } from "./utils.js";
+import { generarToken, verificarToken } from "./jwt.js";
 
-module.exports  = {
+export {
     resError,
     validEmail,
     validName,
@@ -15,7 +16,6 @@ module.exports  = {
     generarHashpass,
     catchAsync,
     response,
-    resError,
     ClientError,
     validNumber,
     validDate,
@@ -26,4 +26,4 @@ module.exports  = {
     comprobarPass,
     generarToken,
     verificarToken
-}
+};

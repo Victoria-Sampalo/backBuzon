@@ -2,7 +2,8 @@
 import express from 'express';
 import cors from 'cors';
 import { resError } from './utils/indexUtils.js';
-import userRoutes from './routes/userRoutes.js';
+import userRoutes from './userRoutes.js';
+
 import dotenv from 'dotenv';
 
 // Configurar las variables de entorno

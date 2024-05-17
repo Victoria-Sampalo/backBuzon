@@ -1,7 +1,8 @@
-const bcrypt = require('bcrypt');
+// bcrypt.js
+import bcrypt from 'bcrypt';
 
 // Función para hacer el hash de una contraseña
-const generarHashpass=async (contraseña)=>{
+export async function generarHashpass(contraseña) {
   const saltRounds = 10;
 
   try {
@@ -12,15 +13,10 @@ const generarHashpass=async (contraseña)=>{
     return hash;
     
   } catch (error) {
-    throw new Error('Error al generar el Hash')
+    throw new Error('Error al generar el Hash');
   }
 }
 
-const comprobarPass= async (passUno, passDos)=>{
-  return bcrypt.compare(passUno, passDos)
+export async function comprobarPass(passUno, passDos) {
+  return bcrypt.compare(passUno, passDos);
 }
-
-module.exports={
-    generarHashpass,
-    comprobarPass
-  };

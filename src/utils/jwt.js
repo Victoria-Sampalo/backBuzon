@@ -1,29 +1,27 @@
-const jwt=require('jsonwebtoken')
-require('dotenv').config()
+// jwt.js
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
-const generarToken=async (user)=>{
-    const token= jwt.sign(
+dotenv.config();
+
+export async function generarToken(user) {
+    const token = jwt.sign(
         {
-            _id:user._id,
-            role:user.role
+            _id: user._id,
+            role: user.role
         },
         process.env.JWT,
         {
-           expiresIn: "24h"
+            expiresIn: "24h"
         }
-    )
-    return token
+    );
+    return token;
 }
 
-const verificarToken=async(token)=>{
+export async function verificarToken(token) {
     try {
-        return jwt.verify(token, process.env.JWT)
+        return jwt.verify(token, process.env.JWT);
     } catch (error) {
-        return null
+        return null;
     }
 }
-
-module.exports={
-    generarToken,
-    verificarToken
-  };
