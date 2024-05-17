@@ -1,10 +1,10 @@
 const {postCrearUsuario, getUserID, getUsers, UserDeleteId, userPut}=require("./userController");
-const { login, validToken } = require("./loginController");
+const { login, validToken, pruebaBBDD } = require("./loginController");
 const {tokenValid, tokenValidAdmin} = require("./authController");
 
 
 module.exports = {
     postCrearUsuario, getUserID, getUsers, UserDeleteId, userPut,
-    login, validToken,
+    login, validToken, pruebaBBDD,
     tokenValid, tokenValidAdmin
 }

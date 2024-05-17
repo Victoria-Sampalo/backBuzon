@@ -1,6 +1,8 @@
 
 const {catchAsync, response, ClientError, comprobarPass, generarToken, verificarToken} = require('../utils/indexUtils')
 const jwt=require('jsonwebtoken')
+const {pool} = require('../services/db')
+
 
 //comprueba un usuario
 const login= async (req,res)=>{
@@ -29,10 +31,25 @@ const validToken=async(req,res)=>{
 
 }
 
+const pruebaBBDD=async(req,res)=>{
+    // const token=req.body.token
+    // if(verificarToken(token)){
+    //     const id=jwt.decode(token)._id
+    //     const usuario = await User.findOne({ _id: id});
+    //     response(res,200,usuario)
+    // } else{
+    //     throw new ClientError("El token no es correcto o a expirado", 403);
+    // }
+    const resultado=await pool.query('SELECT NOW()')
+    console.log(resultado)
+    response(res, 200, resultado)
+
+}
 
 
 module.exports = {
     //gestiono los errores con catchAsync
     login:catchAsync(login),
-    validToken:catchAsync(validToken)
+    validToken:catchAsync(validToken),
+    pruebaBBDD:catchAsync(pruebaBBDD)
 }

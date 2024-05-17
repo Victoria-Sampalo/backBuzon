@@ -1,15 +1,17 @@
 const { Pool } = require('pg');
-// usamos dtenv para las variables de entorno 
-require('dotenv').config()
+// usamos dotenv para las variables de entorno 
+require('dotenv').config();
 
 // URL de conexión a tu base de datos PostgreSQL
 const connectionString = process.env.EXTERNAL_DB_URL;
 
 // Configurar el Pool
-export const pool = new Pool({
+const pool = new Pool({
   connectionString: connectionString,
-  SSL:true
+  ssl: {
+    rejectUnauthorized: false // Usar "false" si estás utilizando un certificado autofirmado (No recomendado para producción)
+  }
 });
 
 
-
+module.exports = { pool };
