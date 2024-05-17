@@ -1,7 +1,12 @@
-// response.js
-export function response(res, statusCode, data) {
+// explicación minuto 47 https://www.youtube.com/watch?v=MaIeZeHhUgM&t=2147s
+
+const response=(res, statusCode, data)=>{
     res.status(statusCode).json({
-        error: false,
+        error:false,
         data,
-    });
+    })
+}
+
+module.exports={
+    response
 }

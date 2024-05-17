@@ -1,32 +1,33 @@
-// Importar express y otros módulos necesarios
-import express from 'express';
-import cors from 'cors';
-import { resError } from './utils/indexUtils.js';
-import userRoutes from './userRoutes.js';
+//usamos express como freamwork
+const express=require('express');
+const cors = require('cors'); // Importa el paquete cors
+const userRoutes=require("./routes/userRoutes");
+const loginRoutes=require("./routes/loginRoutes");
+const {resError} = require('./utils/indexUtils');
+const { ClientError } = require('./utils/clientError');
 
-import dotenv from 'dotenv';
 
-// Configurar las variables de entorno
-dotenv.config();
+// usamos dtenv para las variables de entorno 
+require('dotenv').config()
 
-// Crear una instancia de express
-const app = express();
-
+const app=express();
 // Middleware para parsear el cuerpo de la solicitud como JSON
 app.use(express.json());
+// le asignamos una constante a las rutas de usuario
 
-// Middleware para habilitar CORS
+// donde escucha el servidor 
+app.listen(process.env.PORT);
 app.use(cors());
 
-// Middleware para las rutas de usuario
-app.use('/api', userRoutes);
+app.use('/api',userRoutes)
+app.use('/api',loginRoutes)
+//le pasamos el manejador de errores en vez del suyo para no mostrar la ruta del error
+app.use((err,req,res,next)=>{
+  const statusCode=err.status || 500;
+  const message=err.message || 'Error interno del servidor';
+  resError(res,statusCode,message)
+})
 
-// Middleware para manejar errores
-app.use((err, req, res, next) => {
-  const statusCode = err.status || 500;
-  const message = err.message || 'Error interno del servidor';
-  resError(res, statusCode, message);
-});
 
 // Escuchar en el puerto definido en las variables de entorno
 const PORT = process.env.PORT_NODE || 4000;

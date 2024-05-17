@@ -1,23 +1,14 @@
-// users.js
-import express from 'express';
-import { pool } from '../services/db.js';
-import { resError, response } from '../utils/indexUtils.js';
-
-const router = express.Router();
+const express = require('express');
+const router = express.Router()
+const {postCrearUsuario, getUserID, getUsers, UserDeleteId, userPut, tokenValid, tokenValidAdmin} = require('../controllers/indexController')
 const bodyParser = require('body-parser');
-const urlencodedParser = bodyParser.urlencoded({ extended: false });
+const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
-const prueba = async (req, res) => {
-    try {
-        const respuesta = await pool.query('SELECT NOW()');
-        // Responde con la lista de usuarios y código de estado 200 (OK)
-        response(res, 200, respuesta);
-    } catch (error) {
-        // En caso de error, responde con un error y código de estado 500 (Internal Server Error)
-        resError(res, 500, error.message);
-    }
-};
 
-router.get("/users", urlencodedParser, prueba);
+router.get("/users", urlencodedParser,tokenValidAdmin, getUsers)
+router.get("/user/:id", urlencodedParser,tokenValid, getUserID)
+router.post("/crearusuario", urlencodedParser,postCrearUsuario)
+router.delete("/borrarusuario/:id", urlencodedParser, tokenValid,UserDeleteId)
+router.put("/actualizarusuario", urlencodedParser,tokenValid, userPut)
 
-export default router;
+module.exports = router;
