@@ -2,7 +2,13 @@
   "name": "backbuzon",
   "version": "1.0.0",
   "main": "index.js",
+  "type": "commonjs",
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  },
   "scripts": {
+    "start": "nodemon src/index.js",
+    "dev": "nodemon src/index.js --env-file=.env",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
