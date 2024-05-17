@@ -1,7 +1,7 @@
 const {resError, prevenirInyeccionCodigo, esPassSegura, validName, validEmail, catchAsync, response, generarHashpass, ClientError } = require('../utils/indexUtils')
 
 // crear usuario
-const postCrearUsuario = async (req, res) => {
+const postCreateUser = async (req, res) => {
     // // doble comprobación, primero por seguridad en el frontend nos aseguraremos que los datos enviados sean correctos,
     // // y aquí (backend) volveremos ha hacer una doble comprobación para evitar injección de código
 
@@ -32,6 +32,9 @@ const getUsers= async (req,res)=>{
     // const usuarios = await User.find();
     // // Responde con la lista de usuarios y código de estado 200 (OK)
     // response(res, 200, usuarios);
+
+    const {rows} =await pool.query("SELECT * FROM users");
+    response(res, 200, rows);
 }
 
 //busca un usuario por ID
@@ -53,7 +56,7 @@ const UserDeleteId=async (req, res)=>{
 }
 
 // modificar el usuario
-const userPut=async (req, res)=>{
+const updateUserId=async (req, res)=>{
     // const filter = { _id: req.body.id};
     // const updateText={};
     // if(!!req.body.name) updateText['name']=prevenirInyeccionCodigo(req.body.name);
@@ -66,9 +69,9 @@ const userPut=async (req, res)=>{
 
 module.exports = {
     //gestiono los errores con catchAsync
-    postCrearUsuario:catchAsync(postCrearUsuario),
+    postCreateUser:catchAsync(postCreateUser),
     getUsers:catchAsync(getUsers),
     getUserID:catchAsync(getUserID),
     UserDeleteId:catchAsync(UserDeleteId),
-    userPut:catchAsync(userPut)
+    updateUserId:catchAsync(updateUserId)
 }

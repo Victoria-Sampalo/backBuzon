@@ -1,4 +1,4 @@
-const { generarHashpass } = require('./indexUtils');
+
 
 const validEmail =(email)=>{
     // Expresión regular para validar el formato de un correo electrónico

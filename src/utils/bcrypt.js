@@ -21,6 +21,5 @@ const comprobarPass= async (passUno, passDos)=>{
 }
 
 module.exports={
-    generarHashpass,
     comprobarPass
   };
