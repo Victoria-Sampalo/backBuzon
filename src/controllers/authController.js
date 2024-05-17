@@ -1,5 +1,4 @@
-const {User} = require('../models/indexModels');
-const {catchAsync, response, ClientError, comprobarPass, generarToken, verificarToken} = require('../utils/indexUtils')
+const {verificarToken} = require('../utils/indexUtils')
 
 //comprueba un usuario
 const tokenValid= async (req, res, next)=>{

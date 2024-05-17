@@ -2,7 +2,7 @@
   "name": "backbuzon",
   "version": "1.0.0",
   "main": "index.js",
-  "type": "commonjs",
+  "type": "module",
   "devDependencies": {
     "nodemon": "^3.0.3"
   },
