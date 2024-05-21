@@ -21,7 +21,8 @@ const pool = new Pool({
 async function executeSQLFromFile(filePath) {
   try {
     const sql = fs.readFileSync(filePath, 'utf8');
-    await pool.query(sql);
+    const respuesta = await pool.query(sql);
+    console.log(respuesta)
     console.log(`${path.basename(filePath)} ejecutado correctamente`);
   } catch (error) {
     console.error(`Error al ejecutar ${path.basename(filePath)}:`, error);
@@ -29,9 +30,18 @@ async function executeSQLFromFile(filePath) {
   }
 }
 
-async function initializeDatabase() {
-  await executeSQLFromFile(path.join(__dirname, 'buzondb.sql'));
-  await executeSQLFromFile(path.join(__dirname, 'data.sql'));
+async function executeSQLfromQuery(query) {
+  try {
+    const respuesta = await pool.query(query);
+    return respuesta
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
-module.exports = { pool, initializeDatabase };
+async function initializeDatabase() {
+  await executeSQLFromFile(path.join(__dirname, 'buzondb.sql'));
+}
+
+module.exports = { pool, initializeDatabase, executeSQLfromQuery };
