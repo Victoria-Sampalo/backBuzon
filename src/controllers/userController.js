@@ -46,9 +46,9 @@ const getUserID= async (req,res)=>{
 
 // borrar un usuario
 const UserDeleteId=async (req, res)=>{
-    // const id = req.params.id;
-    // const userDelete = await User.deleteOne({_id:id});
-    // response(res, 200, userDelete);
+    const id = req.params.id;
+    const {rows}= await executeSQLfromQuery(`DELETE FROM USERS WHERE id=${id}`)
+    response(res, 200, rows);
 }
 
 // modificar el usuario
@@ -61,6 +61,50 @@ const updateUserId=async (req, res)=>{
     // let doc = await User.findOneAndUpdate(filter, updateText);
     // if(doc==null)throw new ClientError("No existe el usuario", 400)
     // response(res, 200, doc);
+    const id = req.body.id;
+
+    console.log(id)
+
+    // Validación de entrada
+    // if (!id || !req.body.name || !req.body.email || !req.body.password || !req.body.direction ||
+    //     !validEmail(req.body.email) ||
+    //     !validName(req.body.name) ||
+    //     !esPassSegura(req.body.password)) {
+    //     return response(res, 400, { message: 'Datos no válidos' });
+    // }
+
+    const name = req.body.name;
+    const company = req.body.company;
+    const cif = req.body.cif;
+    const phone = req.body.phone;
+    const email = req.body.email;
+    const pass = await generarHashpass(req.body.password);
+    const type = req.body.type;
+
+   // Usar una cadena para la consulta SQL
+   const query = `
+   UPDATE users 
+   SET 
+       name = '${name}', 
+       company = '${company}', 
+       CIF = '${cif}', 
+       phone = '${phone}', 
+       email = '${email}', 
+       password = '${pass}', 
+       type = '${type}' 
+   WHERE 
+       id = '${id}'
+`;
+
+// Ejecutar la consulta
+const { rowCount } = await executeSQLfromQuery(query);
+
+if (rowCount === 0) {
+   return response(res, 404, { message: 'User not found' });
+}
+
+response(res, 200, { message: 'User updated successfully' });
+
 }
 
 module.exports = {
