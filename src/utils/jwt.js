@@ -5,7 +5,7 @@ const generarToken=async (user)=>{
     const token= jwt.sign(
         {
             _id:user._id,
-            role:user.role
+            type:user.type
         },
         process.env.JWT,
         {
@@ -23,7 +23,18 @@ const verificarToken=async(token)=>{
     }
 }
 
+const decodeToken=async(token)=>{
+    try {
+        return jwt.decode(token);
+    } catch (error) {
+        return null;
+    }
+}
+
+
 module.exports={
     generarToken,
-    verificarToken
+    verificarToken,
+    decodeToken
+
   };

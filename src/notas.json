@@ -1,0 +1,16 @@
+[
+  {
+    "id": 460,
+    "name": "Javier",
+    "email": "Javier51@gmail.com",
+    "type": "normal",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDYwLCJlbWFpbCI6IkphdmllcjUxQGdtYWlsLmNvbSIsInR5cGUiOiJub3JtYWwiLCJpYXQiOjE3MTYyOTk4NjEsImV4cCI6MTcxNjM4NjI2MX0.pueAA5QeAswJPLSMIpjpIFTcvJdQV6qKGhf03e70avk"
+  },
+  {
+    "id": 450,
+    "name": "Antonio",
+    "email": "Antonio41@gmail.com",
+    "type": "admin",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDUwLCJlbWFpbCI6IkFudG9uaW80MUBnbWFpbC5jb20iLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3MTYzMDA1MDgsImV4cCI6MTcxNjM4NjkwOH0.xzCv3GszOwvED1U04ZOTCutO9hPTyCwOp_-PbRR6oIs"
+  }
+]

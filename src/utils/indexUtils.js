@@ -5,7 +5,7 @@ const {response}=require('./response')
 const {ClientError}=require('./clientError')
 const {resError}= require('./resError');
 const { calcularPrecio } = require("./utils");
-const { generarToken, verificarToken } = require("./jwt");
+const { generarToken, verificarToken, decodeToken } = require("./jwt");
 
 module.exports  = {
     resError,
@@ -25,5 +25,6 @@ module.exports  = {
     calcularPrecio,
     comprobarPass,
     generarToken,
-    verificarToken
+    verificarToken,
+    decodeToken
 }

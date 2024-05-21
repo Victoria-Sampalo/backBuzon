@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router()
-const { getUserID, getUsers, UserDeleteId, updateUserId, tokenValid, tokenValidAdmin, postCreateUser, validToken} = require('../controllers/indexController')
+const { getUserID, getUsers, UserDeleteId, updateUserId, tokenValid, tokenValidAdmin, 
+    postCreateUser, validToken} = require('../controllers/indexController')
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
