@@ -23,14 +23,17 @@ const login = async (req, res) => {
   const { rows } = await executeSQLfromQuery(query);
 
   if (rows.length === 0) {
-    return response(res, 401, { message: "Invalid email or password" });
+    //return response(res, 401, { message: "Invalid email or password" });
+    throw new ClientError("Usuario no encontrado", 404)
+
   }
   const user = rows[0];
 
   // Verificar la contraseña
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) {
-    return response(res, 401, { message: "Invalid password" });
+    //return response(res, 401, { message: "Invalid password" });
+    throw new ClientError("Password invalid", 401)
   }
   // Generar un token (por ejemplo, JWT)
   const token = jwt.sign(
@@ -40,7 +43,7 @@ const login = async (req, res) => {
   );
 
   // Enviar la respuesta con el token
-  response(res, 200, { message: "Login successful", token });
+  response(res, 200, { usuario: user, token });
 
   // // Utiliza el método findOne() de Mongoose para obtener 1 usuario
   // const usuario = await User.findOne({ email: emailAux});
@@ -59,7 +62,7 @@ const validToken = async (req, res) => {
       const {rows} = await executeSQLfromQuery(`SELECT * FROM USERS WHERE id=${id}`);
       
       if(rows.length >0){
-        response(res,200,true)
+        response(res,200,rows[0])
       }else{
          response(res,200,false)
       }
