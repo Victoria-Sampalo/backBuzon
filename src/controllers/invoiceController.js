@@ -73,7 +73,7 @@ const getAllInvoices = async (req, res) => {
 const getAllInvoicesAdminLimitFilters = async (req, res) => {
   const limit = req.body.limit
   const  offset = req.body.offset
-  const { numerofactura, company } = req.body;
+  const { numerofactura,development, company } = req.body;
    // Construir la consulta SQL dinámicamente
    let query = 'SELECT * FROM INVOICES';
    const conditions = [];
@@ -81,6 +81,9 @@ const getAllInvoicesAdminLimitFilters = async (req, res) => {
   // Agregar condiciones si los filtros están presentes
   if (numerofactura) {
     conditions.push(`invoice_number ILIKE '%${numerofactura}%'`);
+  }
+  if (development) {
+    conditions.push(`development = '${development}'`);
   }
   if (company) {
     conditions.push(`company = '${company}'`);
@@ -122,13 +125,16 @@ const getCountInvoicesAdmin = async (req, res) => {
 };
 
 const getCountInvoicesAdminFilters = async (req, res) => {
-  const { numerofactura, company } = req.body;
+  const { numerofactura,development, company } = req.body;
 
   let query = `SELECT COUNT(*) AS total_filas FROM INVOICES WHERE 1=1`;
   
   // Añadir filtros opcionales
   if (numerofactura) {
     query += ` AND invoice_number = '${numerofactura}'`;
+  }
+  if (development) {
+    query += ` AND development = '${development}'`;
   }
   if (company) {
     query += ` AND company = '${company}'`;
@@ -208,6 +214,14 @@ const getInvoiceID = async (req, res) => {
 };
 
 
+const getAllDevelopment = async (req, res) => {
+    const { rows } = await executeSQLfromQuery("SELECT DISTINCT development FROM INVOICES");
+    response(res, 200, rows);
+  
+};
+
+
+
 // borrar una factura
 const invoiceDeleteId=async (req, res)=>{
   const id = req.params.id;
@@ -275,5 +289,6 @@ module.exports = {
   getAllInvoicesAdmin:catchAsync(getAllInvoicesAdmin),
   getCountInvoicesAdmin:catchAsync(getCountInvoicesAdmin),
   getAllInvoicesAdminLimitFilters:catchAsync(getAllInvoicesAdminLimitFilters),
-  getCountInvoicesAdminFilters:catchAsync(getCountInvoicesAdminFilters)
+  getCountInvoicesAdminFilters:catchAsync(getCountInvoicesAdminFilters),
+  getAllDevelopment:catchAsync(getAllDevelopment),
 };
