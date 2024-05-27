@@ -70,14 +70,102 @@ const getAllInvoices = async (req, res) => {
   response(res, 200, rows);
 };
 
+const getAllInvoicesAdminLimitFilters = async (req, res) => {
+  const limit = req.body.limit
+  const  offset = req.body.offset
+  const { numerofactura, company } = req.body;
+   // Construir la consulta SQL dinámicamente
+   let query = 'SELECT * FROM INVOICES';
+   const conditions = [];
+ 
+  // Agregar condiciones si los filtros están presentes
+  if (numerofactura) {
+    conditions.push(`invoice_number ILIKE '%${numerofactura}%'`);
+  }
+  if (company) {
+    conditions.push(`company = '${company}'`);
+  }
+  // Combinar las condiciones con la cláusula WHERE si existen
+  if (conditions.length > 0) {
+    query += ' WHERE ' + conditions.join(' AND ');
+  }
+
+  // Agregar limit y offset
+  query += ` LIMIT ${limit} OFFSET ${offset}`;
+
+  const { rows } = await executeSQLfromQuery(query);
+  response(res, 200, rows);
+ 
+};
+
 const getInvoicesFromUser = async (req, res) => {
-  // Obtén el ID del parámetro de la solicitud
-  const id = req.body.user_id;
+  const id = req.body.id;
+  const limit = req.body.limit;
+  const  offset = req.body.offset;
+
+  console.log("id" + id)
   const { rows } = await executeSQLfromQuery(
-    `SELECT * FROM INVOICES WHERE user_id=${id}`
+    `SELECT * FROM INVOICES WHERE user_id=${id} LIMIT ${limit}  OFFSET ${offset}`
   );
+
   response(res, 200, rows);
 };
+
+
+const getCountInvoicesAdmin = async (req, res) => {
+  const { rows } = await executeSQLfromQuery(
+    `SELECT COUNT(*) AS total_filas FROM INVOICES`
+
+  );
+
+  response(res, 200, rows[0]);
+};
+
+const getCountInvoicesAdminFilters = async (req, res) => {
+  const { numerofactura, company } = req.body;
+
+  let query = `SELECT COUNT(*) AS total_filas FROM INVOICES WHERE 1=1`;
+  
+  // Añadir filtros opcionales
+  if (numerofactura) {
+    query += ` AND invoice_number = '${numerofactura}'`;
+  }
+  if (company) {
+    query += ` AND company = '${company}'`;
+  }
+
+
+    const { rows } = await executeSQLfromQuery(query);
+    response(res, 200, rows[0]);
+  
+};
+
+const getCountInvoices = async (req, res) => {
+  // Obtén el ID del parámetro de la solicitud
+  const id = req.body.id;
+  console.log("id"+ id);
+  const { rows } = await executeSQLfromQuery(
+    `SELECT COUNT(*) AS total_filas FROM INVOICES WHERE user_id=${id}`
+
+  );
+
+  response(res, 200, rows[0]);
+};
+
+
+ const getAllInvoicesAdmin = async (req, res) => {
+  const limit = req.body.limit
+  const  offset = req.body.offset
+        // Obtén el ID del parámetro de la solicitud
+        const id = req.body.id;
+        console.log("id"+ id);
+        const { rows } = await executeSQLfromQuery(
+          `SELECT * FROM INVOICES  LIMIT ${limit}  OFFSET ${offset}`
+        );
+      
+      
+        response(res, 200, rows);
+      };
 
 //busca un usuario por ID
 const getInvoiceID = async (req, res) => {
@@ -182,5 +270,10 @@ module.exports = {
   getInvoiceID: catchAsync(getInvoiceID),
   postCreateInvoice:catchAsync(postCreateInvoice),
   updateInvoiceId:catchAsync(updateInvoiceId),
-  invoiceDeleteId:catchAsync(invoiceDeleteId)
+  invoiceDeleteId:catchAsync(invoiceDeleteId),
+  getCountInvoices:catchAsync(getCountInvoices),
+  getAllInvoicesAdmin:catchAsync(getAllInvoicesAdmin),
+  getCountInvoicesAdmin:catchAsync(getCountInvoicesAdmin),
+  getAllInvoicesAdminLimitFilters:catchAsync(getAllInvoicesAdminLimitFilters),
+  getCountInvoicesAdminFilters:catchAsync(getCountInvoicesAdminFilters)
 };
