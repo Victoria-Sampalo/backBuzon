@@ -1,5 +1,5 @@
 const { executeSQLfromQuery } = require('../database/db');
-const {resError, prevenirInyeccionCodigo, esPassSegura, validName, validEmail, catchAsync, response, generarHashpass, ClientError } = require('../utils/indexUtils')
+const {resError, prevenirInyeccionCodigo, esPassSegura, validName, validEmail, catchAsync, response, generarHashpass, ClientError, verificarToken } = require('../utils/indexUtils')
 
 // crear usuario
 const postCreateUser = async (req, res) => {
@@ -14,6 +14,18 @@ const postCreateUser = async (req, res) => {
     // Crear un nuevo usuario utilizando el modelo de Mongoose
     //const newUser = new User(req.body);
     // genero una password segura
+    let token=null;
+    let verificacion=null
+    let esAdmin=false;
+    try {
+        token=req.headers.authorization.split(' ')[1];
+        verificacion=await verificarToken(token);
+       console.log(verificacion);
+        if(verificacion.type=='admin') esAdmin=true;
+       
+    } catch (error) {
+        console.log(error);
+    }
     const passSegura=generarHashpass(req.body.password);
     const name=req.body.name
     const company= req.body.company
@@ -21,11 +33,18 @@ const postCreateUser = async (req, res) => {
     const phone= req.body.phone
     const email=req.body.email
     const pass=await passSegura
-    const type=req.body.type
+    const type = (esAdmin) ? req.body.user_type: 'normal';
+    const user_status = (esAdmin) ? req.body.user_status: 'false';
 
-    const {rowCount}= await executeSQLfromQuery(`INSERT INTO users (name, company, CIF, phone, email, password, type) VALUES ('${name}', '${company}', '${cif}', '${phone}', '${email}', '${pass}', '${type}');`)
+    // user_type: (datos.type==null)? 'normal' : datos.type,
+    // user_status: (datos.status==null)? false : datos.status,
+
+    const {rowCount}= await executeSQLfromQuery(`INSERT INTO users (name, company, CIF, phone, email, password, type, user_status ) VALUES ('${name}', '${company}', '${cif}', '${phone}', '${email}', '${pass}', '${type}', '${user_status}');`)
+    
+    const {rows}= await executeSQLfromQuery(`SELECT * FROM USERS WHERE email='${email}'`);
+    console.log(rows[0]);
     // Enviar el usuario guardado como respuesta
-    response(res, 200, rowCount)
+    response(res, 200, rows[0])
 }
 
 //recoge todos los usuarios
@@ -79,7 +98,8 @@ const updateUserId=async (req, res)=>{
     const phone = req.body.phone;
     const email = req.body.email;
     const pass = await generarHashpass(req.body.password);
-    const type = req.body.type;
+    const type = req.body.user_type;
+    const user_status = req.body.user_status;
 
    // Usar una cadena para la consulta SQL
    const query = `
@@ -91,7 +111,8 @@ const updateUserId=async (req, res)=>{
        phone = '${phone}', 
        email = '${email}', 
        password = '${pass}', 
-       type = '${type}' 
+       user_type = '${type}',
+       user_status = '${user_status}',
    WHERE 
        id = '${id}'
 `;

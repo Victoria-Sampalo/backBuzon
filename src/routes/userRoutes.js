@@ -7,7 +7,9 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 router.post("/createuser", urlencodedParser, postCreateUser)
 
- router.get("/users", urlencodedParser,tokenValidAdmin, getUsers)
+ router.get("/users", urlencodedParser,getUsers)
+//   router.get("/users", urlencodedParser, getUsers)
+
 
 router.get("/user/:id", urlencodedParser,tokenValid,getUserID)
 

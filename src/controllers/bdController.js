@@ -41,7 +41,9 @@ const createUsers = async (req, res) => {
         const email=name+index+"@gmail.com"
         const pass=await passSegura
         const type=tipo[Math.floor(Math.random() * tipo.length)] 
-        await executeSQLfromQuery(`INSERT INTO users (name, company, CIF, phone, email, password, type) VALUES ('${name}', '${company}', '${cif}', '${phone}', '${email}', '${pass}', '${type}');`)
+        const status=(type=="admin")? true:false;
+
+        await executeSQLfromQuery(`INSERT INTO users (name, company, CIF, phone, email, password, type, user_status) VALUES ('${name}', '${company}', '${cif}', '${phone}', '${email}', '${pass}', '${type}', '${status}');`)
     }
     // Enviar el usuario guardado como respuesta
     response(res, 200, {message:'Usuarios creados correctamente'})
@@ -78,30 +80,35 @@ const createInvoices=async (req, res)=>{
     const companyRandom=['prime', 'project']
     const developmentRandom=['neinor', 'lagoon', 'ocyan']
     const statusRandom=['sent', 'pending', 'paid', 'error', 'rejected']
-    for (let index = 0; index < 100; index++) {
-        const user_id= index
-        const invoice_number= `INV-${Math.floor(Math.random() * 1000) + 1000}`
-        const development= developmentRandom[Math.floor(Math.random() * developmentRandom.length)] 
-        const company=companyRandom[Math.floor(Math.random() * companyRandom.length)] 
-        const invoice_date=generateRandomDate() // Random invoice date
-        const registration_date=generateRandomDate()// Random registration date
-        const status=statusRandom[Math.floor(Math.random() * statusRandom.length)] 
-        const error_message="mensaje de error"
-        const rejection_message="mensaje de rechazo"
-        const concept=`concepto khj  wjehb fywfe wfeyuwgfbewebiuf usyfgusbuysabdfuasbf8sbdfsdf`
-        const amount= Math.floor(Math.random() * 1000) + 100.00;
-        await executeSQLfromQuery(`INSERT INTO invoices (
-            user_id, 
-            invoice_number,
-            development,
-            company,
-            invoice_date,
-            registration_date,
-            status,
-            error_message,
-            rejection_message,
-            concept,
-            amount) VALUES ('${user_id}','${invoice_number}', '${development}', '${company}', '${invoice_date}', '${registration_date}', '${status}', '${error_message}', '${rejection_message}', '${concept}', '${amount}');`)
+    const crearInvoice= async (index)=>{
+      const user_id= index
+      const invoice_number= `INV-${Math.floor(Math.random() * 1000) + 1000}`
+      const development= developmentRandom[Math.floor(Math.random() * developmentRandom.length)] 
+      const company=companyRandom[Math.floor(Math.random() * companyRandom.length)] 
+      const invoice_date=generateRandomDate() // Random invoice date
+      const registration_date=generateRandomDate()// Random registration date
+      const status=statusRandom[Math.floor(Math.random() * statusRandom.length)] 
+      const error_message="mensaje de error"
+      const rejection_message="mensaje de rechazo"
+      const concept=`concepto khj  wjehb fywfe wfeyuwgfbewebiuf usyfgusbuysabdfuasbf8sbdfsdf`
+      const amount= Math.floor(Math.random() * 1000) + 100.00;
+      await executeSQLfromQuery(`INSERT INTO invoices (
+          user_id, 
+          invoice_number,
+          development,
+          company,
+          invoice_date,
+          registration_date,
+          status,
+          error_message,
+          rejection_message,
+          concept,
+          amount) VALUES ('${user_id}','${invoice_number}', '${development}', '${company}', '${invoice_date}', '${registration_date}', '${status}', '${error_message}', '${rejection_message}', '${concept}', '${amount}');`)
+    }
+    for (let index = 1; index < 100; index++) {
+        crearInvoice(index);
+        crearInvoice(index);
+        crearInvoice(index);
     }
 
     response(res, 200, {message:'Facturas creadas correctamente'})

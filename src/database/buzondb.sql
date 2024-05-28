@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS users (
   phone VARCHAR(20) NOT NULL,
   email VARCHAR(100) NOT NULL UNIQUE,
   password VARCHAR(150) NOT NULL,
-  type user_type NOT NULL DEFAULT 'normal'
+  type user_type NOT NULL DEFAULT 'normal',
+  user_status BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- Create invoices table (IF NOT EXISTS for safety)

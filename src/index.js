@@ -54,7 +54,7 @@ app.use('/api',loginRoutes)
 app.use('/api', resetRoutes)
 app.use('/api', invoiceRoutes)
 
-//le pasamos el manejador de errores en vez del suyo para no mostrar la ruta del error
+// le pasamos el manejador de errores en vez del suyo para no mostrar la ruta del error
 app.use((err,req,res,next)=>{
   const statusCode=err.status || 500;
   const message=err.message || 'Error interno del servidor';

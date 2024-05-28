@@ -19,7 +19,7 @@ const login = async (req, res) => {
       return response(res, 400, { message: 'Email and password are required' });
   }
   // Consulta SQL para obtener el usuario por email
-  const query = `SELECT * FROM USERS WHERE email='${email}'`;
+  const query = `SELECT * FROM USERS WHERE email='${email}' AND user_status='true'`;
   const { rows } = await executeSQLfromQuery(query);
 
   if (rows.length === 0) {
