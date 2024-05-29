@@ -22,8 +22,8 @@ const tokenValidAdmin=async (req, res, next)=>{
     try {
         token=req.headers.authorization.split(' ')[1];
         verificacion=await verificarToken(token);
-        console.log(token) 
-        console.log(verificacion.type)
+        //console.log(token) 
+        //console.log(verificacion.type)
         if(verificacion==null) res.status(409).send({error:true, message: "El token no es valido, pero pasa bien"});
        
         if(verificacion.type=='admin') next();

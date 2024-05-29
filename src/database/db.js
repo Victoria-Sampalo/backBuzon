@@ -30,15 +30,41 @@ async function executeSQLFromFile(filePath) {
   }
 }
 
-async function executeSQLfromQuery(query) {
+async function executeSQLfromQuery(query, values=null) {
   try {
-    const respuesta = await pool.query(query);
+    if (values) {
+       const respuesta = await pool.query(query,values);
     return respuesta
+    }else{
+      const respuesta = await pool.query(query);
+    return respuesta
+    }
+   
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
+
+const executeSQLfromQuery2 = async (query, values = null) => {
+  try {
+      const client = await pool.connect();
+      try {
+          if (values) {
+              const result = await client.query(query, values);
+              return result;
+          } else {
+              const result = await client.query(query);
+              return result;
+          }
+      } finally {
+          client.release();
+      }
+  } catch (err) {
+      console.error('Database query error', err);
+      throw err;
+  }
+};
 
 async function initializeDatabase() {
   await executeSQLFromFile(path.join(__dirname, 'buzondb.sql'));

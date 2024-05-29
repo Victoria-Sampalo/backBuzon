@@ -53,6 +53,32 @@ const getUsers= async (req,res)=>{
     response(res, 200, rows);
 }
 
+const getCountUsers= async (req,res)=>{
+  let query = `SELECT COUNT(*) AS total_filas FROM USERS`;
+  const { rows } = await executeSQLfromQuery(query);
+  response(res, 200, rows[0]);
+}
+
+
+//Recoge todos los usuarios teniendo en cuenta filtro y paginación
+const getAllUserLimitFilters =async(req,res) =>{
+    const limit = req.body.limit
+    const  offset = req.body.offset
+          // Obtén el ID del parámetro de la solicitud
+          const id = req.body.id;
+          //console.log("id"+ id);
+          const { rows } = await executeSQLfromQuery(
+            `SELECT * FROM USERS ORDER BY id ASC LIMIT ${limit}  OFFSET ${offset}`
+          );
+        
+        
+          response(res, 200, rows);
+
+
+}
+
+
+
 //busca un usuario por ID
 const getUserID= async (req,res)=>{
     // Obtén el ID del parámetro de la solicitud
@@ -82,7 +108,7 @@ const updateUserId=async (req, res)=>{
     // response(res, 200, doc);
     const id = req.body.id;
 
-    console.log(id)
+    console.log("ID: "+id)
 
     // Validación de entrada
     // if (!id || !req.body.name || !req.body.email || !req.body.password || !req.body.direction ||
@@ -98,33 +124,39 @@ const updateUserId=async (req, res)=>{
     const phone = req.body.phone;
     const email = req.body.email;
     const pass = await generarHashpass(req.body.password);
-    const type = req.body.user_type;
+    const type = req.body.type;
     const user_status = req.body.user_status;
 
    // Usar una cadena para la consulta SQL
    const query = `
    UPDATE users 
    SET 
-       name = '${name}', 
-       company = '${company}', 
-       CIF = '${cif}', 
-       phone = '${phone}', 
-       email = '${email}', 
-       password = '${pass}', 
-       user_type = '${type}',
-       user_status = '${user_status}',
+       name = $1, 
+       company = $2, 
+       CIF = $3, 
+       phone = $4, 
+       email = $5, 
+       password = $6, 
+       type = $7,
+       user_status = $8
    WHERE 
-       id = '${id}'
+       id = $9
 `;
+const values = [name, company, cif, phone, email, pass, type, user_status, id];
+
 
 // Ejecutar la consulta
-const { rowCount } = await executeSQLfromQuery(query);
+const { rowCount } = await executeSQLfromQuery(query, values);
 
 if (rowCount === 0) {
    return response(res, 404, { message: 'User not found' });
 }
 
-response(res, 200, { message: 'User updated successfully' });
+const {rows}= await executeSQLfromQuery(`SELECT * FROM USERS WHERE email='${email}'`);
+   // console.log(rows[0]);
+    // Enviar el usuario guardado como respuesta
+    response(res, 200, rows[0])
+// response(res, 200, { message: 'User updated successfully' });
 
 }
 
@@ -134,5 +166,7 @@ module.exports = {
     getUsers:catchAsync(getUsers),
     getUserID:catchAsync(getUserID),
     UserDeleteId:catchAsync(UserDeleteId),
-    updateUserId:catchAsync(updateUserId)
+    updateUserId:catchAsync(updateUserId),
+    getCountUsers:catchAsync(getCountUsers),
+    getAllUserLimitFilters:catchAsync(getAllUserLimitFilters)
 }

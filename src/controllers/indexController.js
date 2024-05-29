@@ -1,8 +1,12 @@
-const {postCreateUser, getUserID, getUsers, UserDeleteId, updateUserId}=require("./userController");
+const {postCreateUser, getUserID, getUsers, UserDeleteId, updateUserId, getCountUsers, getAllUserLimitFilters}=require("./userController");
 const { login, validToken, pruebaBBDD } = require("./loginController");
 const {tokenValid, tokenValidAdmin} = require("./authController");
 const { borrarUsuarios, borrarInvoices, createUsers, createInvoices } = require("./bdController");
-const { postCreateInvoice,getAllInvoices,getInvoicesFromUser,getInvoiceID, updateInvoiceId, invoiceDeleteId, getCountInvoices, getAllInvoicesAdmin, getCountInvoicesAdmin, getAllInvoicesAdminLimitFilters, getCountInvoicesAdminFilters, getAllDevelopment } = require("./invoiceController");
+const { postCreateInvoice,getAllInvoices,getInvoicesFromUser,getInvoiceID,
+     updateInvoiceId, invoiceDeleteId, getCountInvoices, getAllInvoicesAdmin,
+      getCountInvoicesAdmin, getAllInvoicesAdminLimitFilters, 
+      getCountInvoicesAdminFilters,
+       getAllDevelopment } = require("./invoiceController");
 
 
 module.exports = {
@@ -11,6 +15,8 @@ module.exports = {
     tokenValid, tokenValidAdmin,
     borrarUsuarios, borrarInvoices, createUsers, createInvoices,
     postCreateInvoice,getAllInvoices,getInvoicesFromUser,getInvoiceID,updateInvoiceId,invoiceDeleteId, 
-    getCountInvoices, getAllInvoicesAdmin,getCountInvoicesAdmin,getAllInvoicesAdminLimitFilters,getCountInvoicesAdminFilters,getAllDevelopment
+    getCountInvoices, getAllInvoicesAdmin,getCountInvoicesAdmin,getAllInvoicesAdminLimitFilters,
+    getCountInvoicesAdminFilters,getAllDevelopment,
+    getCountUsers,getAllUserLimitFilters
 
 }
