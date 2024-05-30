@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router()
-const { getUserID, getUsers, UserDeleteId, updateUserId, tokenValid, tokenValidAdmin, 
+const { getUserID, getUsers, userDeleteId, updateUserId, tokenValid, tokenValidAdmin, 
     postCreateUser, validToken,
     getCountUsers,
     getAllUserLimitFilters} = require('../controllers/indexController')
@@ -19,7 +19,7 @@ router.post("/userslimitfilters", urlencodedParser,tokenValidAdmin,getAllUserLim
 
 router.get("/user/:id", urlencodedParser,tokenValid,getUserID)
 
-router.delete("/deleteuser/:id", urlencodedParser,tokenValidAdmin, UserDeleteId)
+router.delete("/deleteuser/:id", urlencodedParser,tokenValidAdmin, userDeleteId)
 router.put("/updateuser", urlencodedParser, tokenValidAdmin, updateUserId)
 
 module.exports = router;

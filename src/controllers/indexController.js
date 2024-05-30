@@ -1,4 +1,4 @@
-const {postCreateUser, getUserID, getUsers, UserDeleteId, updateUserId, getCountUsers, getAllUserLimitFilters}=require("./userController");
+const {postCreateUser, getUserID, getUsers, userDeleteId, updateUserId, getCountUsers, getAllUserLimitFilters}=require("./userController");
 const { login, validToken, pruebaBBDD } = require("./loginController");
 const {tokenValid, tokenValidAdmin} = require("./authController");
 const { borrarUsuarios, borrarInvoices, createUsers, createInvoices } = require("./bdController");
@@ -10,7 +10,7 @@ const { postCreateInvoice,getAllInvoices,getInvoicesFromUser,getInvoiceID,
 
 
 module.exports = {
-    postCreateUser, getUserID, getUsers, UserDeleteId, updateUserId,
+    postCreateUser, getUserID, getUsers, userDeleteId, updateUserId,
     login, validToken, pruebaBBDD,
     tokenValid, tokenValidAdmin,
     borrarUsuarios, borrarInvoices, createUsers, createInvoices,

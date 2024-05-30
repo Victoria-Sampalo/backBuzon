@@ -19,21 +19,30 @@ const login = async (req, res) => {
       return response(res, 400, { message: 'Email and password are required' });
   }
   // Consulta SQL para obtener el usuario por email
-  const query = `SELECT * FROM USERS WHERE email='${email}' AND user_status='true'`;
+  // const query = `SELECT * FROM USERS WHERE email='${email}' AND user_status='true'`;
+  const query = `SELECT * FROM USERS WHERE email='${email}'`;
   const { rows } = await executeSQLfromQuery(query);
+
 
   if (rows.length === 0) {
     //return response(res, 401, { message: "Invalid email or password" });
     throw new ClientError("Usuario no encontrado", 404)
 
   }
+  //Me quedo con la info del usuario
   const user = rows[0];
+
+  // Verificar si el usuario está activo
+  if (!user.user_status) {
+    // Usuario no está activo
+    throw new ClientError("Usuario no activo", 403);
+  }
 
   // Verificar la contraseña
   const validPassword = await bcrypt.compare(password, user.password);
   if (!validPassword) {
-    //return response(res, 401, { message: "Invalid password" });
-    throw new ClientError("Password invalid", 401)
+    //Contraseña incorrecta
+    throw new ClientError("Contraseña incorrecta", 401)
   }
   // Generar un token (por ejemplo, JWT)
   const token = jwt.sign(
