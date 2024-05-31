@@ -1,11 +1,12 @@
 //usamos express como freamwork
-const express=require('express');
-const cors = require('cors'); // Importa el paquete cors
-const userRoutes=require("./routes/userRoutes");
-const loginRoutes=require("./routes/loginRoutes");
-const resetRoutes=require("./routes/resetRoutes");
-const invoiceRoutes=require("./routes/invoicesRoutes")
-const {resError} = require('./utils/indexUtils');
+const express = require('express');
+const cors = require('cors');
+const userRoutes = require('./routes/userRoutes');
+const loginRoutes = require('./routes/loginRoutes');
+const resetRoutes = require('./routes/resetRoutes');
+const invoiceRoutes = require('./routes/invoicesRoutes');
+const dropboxRoutes = require('./routes/dropboxRoutes');
+const { resError } = require('./utils/indexUtils');
 const { ClientError } = require('./utils/clientError');
 const { initializeDatabase, executeSQLfromQuery } = require('./database/db');
 
@@ -53,13 +54,15 @@ app.use('/api',userRoutes)
 app.use('/api',loginRoutes)
 app.use('/api', resetRoutes)
 app.use('/api', invoiceRoutes)
+app.use('/api', dropboxRoutes);
+
 
 // le pasamos el manejador de errores en vez del suyo para no mostrar la ruta del error
-app.use((err,req,res,next)=>{
-  const statusCode=err.status || 500;
-  const message=err.message || 'Error interno del servidor';
-  resError(res,statusCode,message)
-})
+app.use((err, req, res, next) => {
+  const statusCode = err.status || 500;
+  const message = err.message || 'Error interno del servidor';
+  resError(res, statusCode, message);
+});
 
 
 // Escuchar en el puerto definido en las variables de entorno

@@ -12,6 +12,16 @@ const {
   decodeToken,
 } = require("../utils/indexUtils");
 
+// const Dropbox = require('dropbox');
+// const fs = require('fs');
+
+// // Crear Dropbox Client (asumiendo que tienes las credenciales configuradas)
+// const dbx = new Dropbox({
+//   clientId: process.env.DROPBOX_CLIENT_ID,
+//   clientSecret: process.env.DROPBOX_CLIENT_SECRET,
+// });
+
+// -------------------- Funciones para Facturas --------------------
 // crear usuario
 const postCreateInvoice = async (req, res) => {
 
