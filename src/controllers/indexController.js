@@ -6,7 +6,10 @@ const { postCreateInvoice,getAllInvoices,getInvoicesFromUser,getInvoiceID,
      updateInvoiceId, invoiceDeleteId, getCountInvoices, getAllInvoicesAdmin,
       getCountInvoicesAdmin, getAllInvoicesAdminLimitFilters, 
       getCountInvoicesAdminFilters,
-       getAllDevelopment } = require("./invoiceController");
+       getAllDevelopment, 
+       getCountInvoicesNormalFilters,
+       } = require("./invoiceController");
+const { listFilesInDropbox, checkFolderExistence, listDirectoriesInDropbox } = require("./dropboxController");
 
 
 module.exports = {
@@ -17,6 +20,12 @@ module.exports = {
     postCreateInvoice,getAllInvoices,getInvoicesFromUser,getInvoiceID,updateInvoiceId,invoiceDeleteId, 
     getCountInvoices, getAllInvoicesAdmin,getCountInvoicesAdmin,getAllInvoicesAdminLimitFilters,
     getCountInvoicesAdminFilters,getAllDevelopment,
-    getCountUsers,getAllUserLimitFilters
+    getCountInvoicesNormalFilters,
+
+    getCountUsers,getAllUserLimitFilters, listFilesInDropbox,checkFolderExistence,listDirectoriesInDropbox
+    
+
+    
+
 
 }

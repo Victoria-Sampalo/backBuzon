@@ -3,7 +3,8 @@ const router = express.Router()
 
 const bodyParser = require('body-parser');
 const { getAllInvoices, getInvoicesFromUser, getInvoiceID, postCreateInvoice, updateInvoiceId, invoiceDeleteId, tokenValid, tokenValidAdmin, getCountInvoices, 
-    getCountInvoicesAdmin, getAllInvoicesAdmin, getAllInvoicesAdminLimitFilters,getCountInvoicesAdminFilters, getAllDevelopment } = require('../controllers/indexController');
+    getCountInvoicesAdmin, getAllInvoicesAdmin, getAllInvoicesAdminLimitFilters,getCountInvoicesAdminFilters, getAllDevelopment, 
+    getCountInvoicesNormalFilters} = require('../controllers/indexController');
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
@@ -17,16 +18,19 @@ router.post("/allinvoices", urlencodedParser,tokenValidAdmin,getAllInvoicesAdmin
 
 router.post("/allinvoicesadminlimitfilters", urlencodedParser,tokenValidAdmin,getAllInvoicesAdminLimitFilters)
 
-router.post("/countinvoices", urlencodedParser,tokenValid, getCountInvoices)
+// router.post("/countinvoices", urlencodedParser,tokenValid, getCountInvoices)
+router.post("/countinvoices", urlencodedParser,tokenValid, getCountInvoicesNormalFilters)
+
+// router.get("/invoicesfromuser", urlencodedParser,tokenValid,)
+//añadirle limit filters
+router.post("/invoicesfromuser", urlencodedParser,tokenValid, getInvoicesFromUser)
+// router.post("/invoicesfromuser", urlencodedParser,getInvoicesFromUser)
 
 
 router.post("/countinvoicesadmin", urlencodedParser,tokenValidAdmin, getCountInvoicesAdmin)
 
 router.post("/countinvoicesadminfilters", urlencodedParser,tokenValidAdmin, getCountInvoicesAdminFilters)
 
-// router.get("/invoicesfromuser", urlencodedParser,tokenValid,)
-router.post("/invoicesfromuser", urlencodedParser,tokenValid, getInvoicesFromUser)
-// router.post("/invoicesfromuser", urlencodedParser,getInvoicesFromUser)
 
 
 // router.get("/invoice/:id", urlencodedParser,tokenValid,) //comprobar que el creador sea el mismo que el usuario

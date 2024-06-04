@@ -1,5 +1,5 @@
 const express = require('express');
-const { uploadFileToDropbox, verifyDropboxConnection } = require('../controllers/dropboxController');
+const { uploadFileToDropbox, verifyDropboxConnection, listFilesInDropbox, checkFolderExistence, listDirectoriesInDropbox } = require('../controllers/dropboxController');
 const multer = require('multer');
 const router = express.Router();
 const bodyParser = require('body-parser');
@@ -13,5 +13,15 @@ router.post('/upload', upload.single('file'), uploadFileToDropbox);
 
 // Ruta para verificar la conexión con Dropbox
 router.get('/verify', verifyDropboxConnection);
+
+
+router.get('/getallfiles', listFilesInDropbox);
+
+router.get('/checkfolder', checkFolderExistence);
+
+
+router.get('/listfolder', listDirectoriesInDropbox);
+
+
 
 module.exports = router;

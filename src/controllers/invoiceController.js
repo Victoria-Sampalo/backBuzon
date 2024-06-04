@@ -112,17 +112,41 @@ const getAllInvoicesAdminLimitFilters = async (req, res) => {
 };
 
 const getInvoicesFromUser = async (req, res) => {
-  const id = req.body.id;
-  const limit = req.body.limit;
-  const  offset = req.body.offset;
+  const { id, limit, offset, numerofactura, development, company } = req.body;
 
-  console.log("id" + id)
-  const { rows } = await executeSQLfromQuery(
-    `SELECT * FROM INVOICES WHERE user_id=${id} LIMIT ${limit}  OFFSET ${offset}`
-  );
+  console.log("id " + id);
+  let query = `SELECT * FROM INVOICES WHERE user_id = $1`;
+  let queryParams = [id];
 
-  response(res, 200, rows);
+  // Agregar condiciones si los filtros están presentes
+  if (numerofactura) {
+    queryParams.push(`%${numerofactura}%`);
+    query += ` AND invoice_number ILIKE $${queryParams.length}`;
+  }
+  if (development) {
+    queryParams.push(development);
+    query += ` AND development = $${queryParams.length}`;
+  }
+  if (company) {
+    queryParams.push(company);
+    query += ` AND company = $${queryParams.length}`;
+  }
+
+  // Agregar limit y offset
+  queryParams.push(limit);
+  query += ` LIMIT $${queryParams.length}`;
+  queryParams.push(offset);
+  query += ` OFFSET $${queryParams.length}`;
+
+  try {
+    const { rows } = await executeSQLfromQuery(query, queryParams);
+    response(res, 200, rows);
+  } catch (error) {
+    console.error("Database query error:", error);
+    response(res, 500, { error: "Internal server error" });
+  }
 };
+
 
 
 const getCountInvoicesAdmin = async (req, res) => {
@@ -156,6 +180,31 @@ const getCountInvoicesAdminFilters = async (req, res) => {
   
 };
 
+const getCountInvoicesNormalFilters = async (req, res) => {
+  const {id, numerofactura,development, company } = req.body;
+
+  let query =  `SELECT COUNT(*) AS total_filas FROM INVOICES WHERE user_id=${id}`
+  
+  // Añadir filtros opcionales
+  if (numerofactura) {
+    query += ` AND invoice_number = '${numerofactura}'`;
+  }
+  if (development) {
+    query += ` AND development = '${development}'`;
+  }
+  if (company) {
+    query += ` AND company = '${company}'`;
+  }
+
+
+    const { rows } = await executeSQLfromQuery(query);
+    response(res, 200, rows[0]);
+  
+};
+
+
+
+//no usado
 const getCountInvoices = async (req, res) => {
   // Obtén el ID del parámetro de la solicitud
   const id = req.body.id;
@@ -301,4 +350,6 @@ module.exports = {
   getAllInvoicesAdminLimitFilters:catchAsync(getAllInvoicesAdminLimitFilters),
   getCountInvoicesAdminFilters:catchAsync(getCountInvoicesAdminFilters),
   getAllDevelopment:catchAsync(getAllDevelopment),
+  getCountInvoicesNormalFilters:catchAsync(getCountInvoicesNormalFilters),
+ 
 };
