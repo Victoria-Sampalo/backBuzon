@@ -96,3 +96,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 notas.json
+
+uploads
