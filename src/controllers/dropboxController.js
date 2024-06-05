@@ -69,22 +69,27 @@ const uploadFileToDropbox = async (req, res) => {
   }
 };
 
-
 // Listar archivos en Dropbox
 const listFilesInDropbox = async (req, res) => {
   try {
-    const folderPath = '/Aplicaciones/buzonapp'; 
+    const folderPath = ''; // Ruta de la carpeta raíz
     console.log('Folder path used:', folderPath);
+
+    console.log('---------------------------------------');
+    console.log(dbx.accessToken);
+    dbx.accessToken = process.env.DROPBOX_ACCESS_TOKEN;
+    console.log('---------------------------------------');
+    console.log(dbx.accessToken);
 
     const responseDropbox = await dbx.filesListFolder({ path: folderPath });
 
     console.log('Response from Dropbox:', responseDropbox);
 
-    if (!responseDropbox || !responseDropbox.entries) {
+    if (!responseDropbox || !responseDropbox.result || !responseDropbox.result.entries) {
       throw new ClientError('No se pudieron obtener los archivos de Dropbox', 500);
     }
 
-    const files = responseDropbox.entries.filter(file => file['.tag'] === 'file');
+    const files = responseDropbox.result.entries.filter(file => file['.tag'] === 'file');
 
     console.log('Files listed from Dropbox successfully:', files);
 
@@ -98,7 +103,6 @@ const listFilesInDropbox = async (req, res) => {
     }
   }
 };
-
 // Verificar si la carpeta 'buzonapp' existe en Dropbox
 const findFolderInDropbox = async (folderName, currentPath = '') => {
   try {

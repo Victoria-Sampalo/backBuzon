@@ -22,58 +22,80 @@ const {
 // });
 
 // -------------------- Funciones para Facturas --------------------
-// crear usuario
+// crear factura
 const postCreateInvoice = async (req, res) => {
+  const {
+    user_id,
+    invoice_number,
+    development,
+    company,
+    invoice_date,
+    status,
+    error_message = null,
+    rejection_message = null,
+    concept,
+    amount
+  } = req.body;
 
-  const user_id = req.body.user_id;
-  const invoice_number = req.body.invoice_number;
-  const development = req.body.development;
-  const company = req.body.company;
-  const invoice_date = req.body.invoice_date;
-   // Valor predeterminado para registration_date
-   const registration_date = new Date().toISOString().split('T')[0]; // Fecha actual
+  const registration_date = new Date().toISOString().split('T')[0]; // Fecha actual
 
-  const status = req.body.status;
-     // Establecer valores predeterminados para error_message y rejection_message
-     const error_message = req.body.error_message || null;
-     const rejection_message = req.body.rejection_message || null;
- 
+  console.log("invoiceController " + req.body)
+  // Validar campos obligatorios
+  if (!user_id || !invoice_number || !development || !company || !invoice_date || !status || !concept || !amount) {
+    return response(res, 400, { message: 'Los campos user_id, invoice_number, development, company, invoice_date, status, concept y amount son obligatorios' });
+  }
 
-  const concept = req.body.concept;
-  const amount = req.body.amount;
+  // Crear la consulta SQL para insertar la factura
+  const insertQuery = `
+    INSERT INTO invoices (
+      user_id, 
+      invoice_number,
+      development,
+      company,
+      invoice_date,
+      registration_date,
+      status,
+      error_message,
+      rejection_message,
+      concept,
+      amount
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+    RETURNING *;
+  `;
 
-     // Validar campos obligatorios
-     if (!user_id || !invoice_number || !development || !company || !invoice_date || !status || !concept || !amount) {
-      return response(res, 400, { message: 'Los campos user_id, invoice_number, development, company, invoice_date, status, concept y amount son obligatorios' });
+  const values = [
+    user_id,
+    invoice_number,
+    development,
+    company,
+    invoice_date,
+    registration_date,
+    status,
+    error_message,
+    rejection_message,
+    concept,
+    amount
+  ];
+
+  try {
+    // Ejecutar la consulta SQL con parámetros preparados
+    const result = await executeSQLfromQuery(insertQuery, values);
+    if (result.rowCount === 0) {
+      return response(res, 500, { message: 'Invoice creation failed' });
     }
 
- // Crear la consulta SQL
- const query = (`INSERT INTO invoices (
-  user_id, 
-  invoice_number,
-  development,
-  company,
-  invoice_date,
-  registration_date,
-  status,
-  error_message,
-  rejection_message,
-  concept,
-  amount) VALUES ('${user_id}','${invoice_number}', '${development}', '${company}', '${invoice_date}', '${registration_date}', '${status}', '${error_message}', '${rejection_message}', '${concept}', '${amount}');`);
-
-// Ejecutar la consulta SQL con parámetros preparados
-const { rowCount } = await executeSQLfromQuery(query);
-console.log(rowCount[0])
-if (rowCount === 0) {
- return response(res, 500, { message: 'Invoice creation failed' });
-}else{
-  
-// Enviar la respuesta con éxito
- response(res, 200, { message: 'Invoice created successfully' , rowCount });
-  //response(res, 200, rowCount );
-}
-
+    // Enviar la respuesta con éxito
+    return response(res, 200, result.rows[0]);
+  } catch (error) {
+    console.error('Error creating invoice:', error);
+    return response(res, 500, { message: 'Internal server error' });
+  }
 };
+
+
+
+
+
 
 const getAllInvoices = async (req, res) => {
   const { rows } = await executeSQLfromQuery("SELECT * FROM INVOICES");
