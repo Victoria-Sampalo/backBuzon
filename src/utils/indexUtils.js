@@ -4,7 +4,7 @@ const {catchAsync} =require('./catchAsync')
 const {response}=require('./response')
 const {ClientError}=require('./clientError')
 const {resError}= require('./resError');
-const { calcularPrecio } = require("./utils");
+const { calcularPrecio, obtenerNombreMes } = require("./utils");
 const { generarToken, verificarToken, decodeToken } = require("./jwt");
 
 module.exports  = {
@@ -26,5 +26,6 @@ module.exports  = {
     comprobarPass,
     generarToken,
     verificarToken,
-    decodeToken
+    decodeToken,
+    obtenerNombreMes,
 }

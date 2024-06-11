@@ -1,7 +1,7 @@
 const Dropbox = require('dropbox').Dropbox;
 const fs = require('fs');
 const path = require('path');
-const { response, catchAsync, ClientError } = require('../utils/indexUtils');
+const { response, catchAsync, ClientError, obtenerNombreMes } = require('../utils/indexUtils');
 
 // Crear instancia del cliente de Dropbox
 let dbx;
@@ -24,8 +24,7 @@ const verifyDropboxConnection = async (req, res) => {
   }
 };
 
-// Subir archivo a Dropbox
-const uploadFileToDropbox = async (req, res) => {
+const uploadFileToDropbox1 = async (req, res) => {
   try {
     const { file } = req;
     if (!file) {
@@ -50,14 +49,20 @@ const uploadFileToDropbox = async (req, res) => {
     fs.renameSync(file.path, filePath);
     console.log('File renamed successfully');
 
-    const dropboxPath = `/${file.originalname}`;
+    // Leer el contenido del archivo
     const fileContent = fs.readFileSync(filePath);
-
     console.log('File content read successfully');
+
+    // Generar un nombre único para el archivo en Dropbox
+    const timestamp = new Date().toISOString().replace(/[:.-]/g, '');
+    const uniqueFileName = `${path.basename(file.originalname, fileExtension)}_${timestamp}${fileExtension}`;
+    const dropboxPath = `/${uniqueFileName}`;
 
     const responseDropbox = await dbx.filesUpload({
       path: dropboxPath,
       contents: fileContent,
+      mode: 'add', // Esto asegura que no se sobrescriban archivos
+      autorename: true // Esto asegura que Dropbox renombre automáticamente si el nombre ya existe
     });
 
     console.log('File uploaded to Dropbox successfully:', responseDropbox);
@@ -68,6 +73,136 @@ const uploadFileToDropbox = async (req, res) => {
     res.status(400).json({ error: true, message: error.message });
   }
 };
+
+const uploadFileToDropbox = async (req, res) => {
+  try {
+    const { file } = req;
+    const { invoice_number } = req.body; // Obtener el invoice_number del body
+    if (!file || !invoice_number) {
+      throw new ClientError('Archivo o número de factura no proporcionados', 400);
+    }
+
+    console.log('File received:', file);
+
+    const fileExtension = path.extname(file.originalname) || '.pdf';
+    const nombreMes = obtenerNombreMes(); // Obtener el nombre del mes actual
+    const newFileName = `${invoice_number}-${nombreMes}${fileExtension}`;
+    const filePath = path.join(__dirname, '../uploads', newFileName);
+
+    console.log('File path with extension:', filePath);
+
+    // Crear la carpeta uploads si no existe
+    const uploadsDir = path.join(__dirname, '../uploads');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir);
+      console.log('Uploads directory created:', uploadsDir);
+    }
+
+    // Renombrar el archivo temporal para agregar la extensión
+    fs.renameSync(file.path, filePath);
+    console.log('File renamed successfully');
+
+    const dropboxPath = `/${newFileName}`;
+    const fileContent = fs.readFileSync(filePath);
+
+    console.log('File content read successfully');
+
+    const responseDropbox = await dbx.filesUpload({
+      path: dropboxPath,
+      contents: fileContent,
+    });
+
+
+    console.log('File uploaded to Dropbox successfully:', responseDropbox);
+
+    response(res, 200, responseDropbox);
+  } catch (error) {
+    console.error('Error in uploadFileToDropbox:', error);
+    res.status(400).json({ error: true, message: error.message });
+  }
+};
+
+const buscarArchivoEnDropbox = async (req, res) => {
+  try {
+    const { nombreArchivo } = req.body; // Obtener el nombre del archivo del cuerpo de la solicitud
+    if (!nombreArchivo) {
+      throw new Error('El nombre del archivo no fue proporcionado');
+    }
+
+    console.log('Buscando el archivo en Dropbox:', nombreArchivo);
+
+    // Construir la ruta del archivo en Dropbox
+    const path = `/${nombreArchivo}`;
+
+    // Obtener el enlace compartido del archivo
+    const enlaceCompartido = await dbx.sharingCreateSharedLink({ path });
+
+    // Obtener la URL pública del archivo
+    const urlPublica = enlaceCompartido.result.url;
+
+    // Construir la respuesta
+    const respuesta = {
+      error: false,
+      url: urlPublica // Devolver la URL pública del archivo
+    };
+    console.log(respuesta);
+    // Enviar la respuesta
+    res.status(200).json(respuesta);
+  } catch (error) {
+    if (error.status === 409 && error.error && error.error.error_summary === 'path/not_found/.') {
+      // Manejar el error cuando el archivo no se encuentra
+      console.error('El archivo no fue encontrado en Dropbox:', error);
+      res.status(404).json({
+        error: true,
+        message: 'El archivo no fue encontrado en Dropbox'
+      });
+    } else {
+      console.error('Error en buscarArchivoEnDropbox:', error);
+      res.status(400).json({ error: true, message: error.message });
+    }
+  }
+};
+
+const descargarArchivoDeDropbox = async (req, res) => {
+  try {
+    const { nombreArchivo } = req.body;
+    if (!nombreArchivo) {
+      throw new Error('El nombre del archivo no fue proporcionado');
+    }
+
+    console.log('Buscando el archivo en Dropbox:', nombreArchivo);
+    const dropboxPath = `/${nombreArchivo}`;
+
+    // Obtener el enlace temporal
+    const responseDropbox = await dbx.filesGetTemporaryLink({
+      path: dropboxPath
+    });
+
+    const urlPublica = responseDropbox.result.link;
+
+    console.log('Enlace temporal obtenido:', urlPublica);
+
+    res.status(200).json({
+      error: false,
+      url: urlPublica
+    });
+  } catch (error) {
+    if (error.status === 409 && error.error.error_summary.includes('path/not_found')) {
+      console.error('El archivo no fue encontrado en Dropbox:', error);
+      res.status(404).json({
+        error: true,
+        message: 'El archivo no fue encontrado en Dropbox'
+      });
+    } else {
+      console.error('Error en descargarArchivoDeDropbox:', error);
+      res.status(400).json({
+        error: true,
+        message: error.message
+      });
+    }
+  }
+};
+
 
 // Listar archivos en Dropbox
 const listFilesInDropbox = async (req, res) => {
@@ -195,4 +330,6 @@ module.exports = {
   listFilesInDropbox: catchAsync(listFilesInDropbox),
   checkFolderExistence: catchAsync(checkFolderExistence),
   listDirectoriesInDropbox: catchAsync(listDirectoriesInDropbox),
+  buscarArchivoEnDropbox:catchAsync(buscarArchivoEnDropbox),
+  descargarArchivoDeDropbox:catchAsync(descargarArchivoDeDropbox)
 };

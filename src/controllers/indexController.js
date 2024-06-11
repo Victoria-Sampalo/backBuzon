@@ -9,7 +9,7 @@ const { postCreateInvoice,getAllInvoices,getInvoicesFromUser,getInvoiceID,
        getAllDevelopment, 
        getCountInvoicesNormalFilters,
        } = require("./invoiceController");
-const { listFilesInDropbox, checkFolderExistence, listDirectoriesInDropbox } = require("./dropboxController");
+const { listFilesInDropbox, checkFolderExistence, listDirectoriesInDropbox, buscarArchivoEnDropbox, descargarArchivoDeDropbox } = require("./dropboxController");
 
 
 module.exports = {
@@ -22,7 +22,8 @@ module.exports = {
     getCountInvoicesAdminFilters,getAllDevelopment,
     getCountInvoicesNormalFilters,
 
-    getCountUsers,getAllUserLimitFilters, listFilesInDropbox,checkFolderExistence,listDirectoriesInDropbox
+    getCountUsers,getAllUserLimitFilters, listFilesInDropbox,checkFolderExistence,listDirectoriesInDropbox,
+    buscarArchivoEnDropbox,descargarArchivoDeDropbox
     
 
     

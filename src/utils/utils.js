@@ -5,8 +5,16 @@ const calcularPrecio=(listajuegos)=>{
     }
     return total
 }
-
+const obtenerNombreMes = () => {
+    const meses = [
+      "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
+      "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
+    ];
+    const fechaActual = new Date();
+    const mes = fechaActual.getMonth();
+    return meses[mes];
+  };
 
 module.exports = {
-    calcularPrecio
+    calcularPrecio, obtenerNombreMes
   };

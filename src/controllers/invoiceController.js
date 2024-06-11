@@ -180,6 +180,7 @@ const getCountInvoicesAdmin = async (req, res) => {
   response(res, 200, rows[0]);
 };
 
+
 const getCountInvoicesAdminFilters = async (req, res) => {
   const { numerofactura,development, company } = req.body;
 

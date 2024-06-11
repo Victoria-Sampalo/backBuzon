@@ -1,5 +1,5 @@
 const express = require('express');
-const { uploadFileToDropbox, verifyDropboxConnection, listFilesInDropbox, checkFolderExistence, listDirectoriesInDropbox } = require('../controllers/dropboxController');
+const { uploadFileToDropbox, verifyDropboxConnection, listFilesInDropbox, checkFolderExistence, listDirectoriesInDropbox, buscarArchivoEnDropbox, descargarArchivoDeDropbox } = require('../controllers/dropboxController');
 const multer = require('multer');
 const router = express.Router();
 const bodyParser = require('body-parser');
@@ -23,5 +23,9 @@ router.get('/checkfolder', checkFolderExistence);
 router.get('/listfolder', listDirectoriesInDropbox);
 
 
+router.post('/searchfile', buscarArchivoEnDropbox );
+
+
+router.post('/downloadfile', descargarArchivoDeDropbox );
 
 module.exports = router;
